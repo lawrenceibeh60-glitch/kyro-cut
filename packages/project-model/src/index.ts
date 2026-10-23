@@ -21,12 +21,12 @@ export function validateProject(input:unknown):ValidationIssue[]{
  if(!Number.isInteger(p.version)||(p.version??0)<1||(p.version??0)>CURRENT_PROJECT_VERSION)issues.push({path:"version",message:"Project version is not supported."});
  if(typeof p.id!=="string"||!p.id.trim())issues.push({path:"id",message:"Project id is required."});
  if(typeof p.name!=="string"||!p.name.trim())issues.push({path:"name",message:"Project name is required."});
- const assetIds=new Set<string>();
+ const assetIds=new Set<string>();const layerIds=new Set<string>();
  if(p.assets!==undefined&&!Array.isArray(p.assets))issues.push({path:"assets",message:"Assets must be an array."});
  if(Array.isArray(p.assets))p.assets.forEach((rawAsset,index)=>{const ap=`assets[${index}]`;if(!rawAsset||typeof rawAsset!=="object"||Array.isArray(rawAsset)){issues.push({path:ap,message:"Asset must be an object."});return;}const a=rawAsset as AssetReference;if(typeof a.id!=="string"||!a.id||assetIds.has(a.id))issues.push({path:ap+".id",message:"Asset ids must be present and unique."});if(typeof a.id==="string")assetIds.add(a.id);if(typeof a.name!=="string"||!a.name.trim())issues.push({path:ap+".name",message:"Asset name is required."});if(!["image","video","audio","font","other"].includes(a.kind))issues.push({path:ap+".kind",message:"Unsupported asset kind."});if(typeof a.mimeType!=="string"||!Number.isSafeInteger(a.sizeBytes)||a.sizeBytes<0||!Number.isFinite(a.lastModified)||typeof a.storageKey!=="string"||!a.storageKey)issues.push({path:ap,message:"Asset metadata is malformed."});});
  if(!Array.isArray(p.compositions)||!p.compositions.length)issues.push({path:"compositions",message:"At least one composition is required."});
  else{
-  const compositionIds=new Set<string>();const layerIds=new Set<string>();
+  const compositionIds=new Set<string>();
   p.compositions.forEach((rawComp,index)=>{
    const path=`compositions[${index}]`;
    if(!rawComp||typeof rawComp!=="object"||Array.isArray(rawComp)){issues.push({path,message:"Composition must be an object."});return;}
@@ -74,6 +74,39 @@ export function validateProject(input:unknown):ValidationIssue[]{
    });
   });
   if(typeof p.activeCompositionId!=="string"||!compositionIds.has(p.activeCompositionId))issues.push({path:"activeCompositionId",message:"Active composition must reference an existing composition."});
+ }
+ if(p.timeline!==undefined){
+  const t=p.timeline as TimelineSequenceDocument;
+  if(!t||typeof t!=="object"||Array.isArray(t)){issues.push({path:"timeline",message:"Timeline must be an object."});}
+  else{
+   if(typeof t.id!=="string"||!t.id)issues.push({path:"timeline.id",message:"Timeline id is required."});
+   if(!finite(t.frameRate)||t.frameRate<=0||t.frameRate>240)issues.push({path:"timeline.frameRate",message:"Timeline frame rate must be in (0, 240]."});
+   if(!Number.isSafeInteger(t.durationFrames)||t.durationFrames<1)issues.push({path:"timeline.durationFrames",message:"Timeline duration must be a positive integer."});
+   if(!Array.isArray(t.tracks))issues.push({path:"timeline.tracks",message:"Timeline tracks must be an array."});
+   else{
+    const trackIds=new Set<string>();const clipIds=new Set<string>();
+    t.tracks.forEach((track,ti)=>{
+     const tp=`timeline.tracks[${ti}]`;
+     if(!track||typeof track!=="object"||Array.isArray(track)){issues.push({path:tp,message:"Track must be an object."});return;}
+     if(typeof track.id!=="string"||!track.id||trackIds.has(track.id))issues.push({path:tp+".id",message:"Track ids must be present and unique."});if(typeof track.id==="string")trackIds.add(track.id);
+     if(!Array.isArray(track.clips)){issues.push({path:tp+".clips",message:"Track clips must be an array."});return;}
+     track.clips.forEach((clip,ci)=>{
+      const cp=`${tp}.clips[${ci}]`;
+      if(!clip||typeof clip!=="object"||Array.isArray(clip)){issues.push({path:cp,message:"Clip must be an object."});return;}
+      if(typeof clip.id!=="string"||!clip.id||clipIds.has(clip.id))issues.push({path:cp+".id",message:"Clip ids must be present and unique."});if(typeof clip.id==="string")clipIds.add(clip.id);
+      if(clip.trackId!==track.id)issues.push({path:cp+".trackId",message:"Clip track reference does not match its containing track."});
+      if(clip.layerId!==undefined&&!layerIds.has(clip.layerId))issues.push({path:cp+".layerId",message:"Clip must reference an existing layer."});
+      if(clip.assetId!==undefined&&!assetIds.has(clip.assetId))issues.push({path:cp+".assetId",message:"Clip must reference an existing asset."});
+      for(const key of ["startFrame","sourceInFrame","durationFrames"] as const)if(!Number.isSafeInteger(clip[key])||clip[key]<0)issues.push({path:cp+"."+key,message:"Clip frame values must be non-negative integers."});
+      if(clip.durationFrames<1)issues.push({path:cp+".durationFrames",message:"Clip duration must be at least one frame."});
+      if(!finite(clip.playbackRate)||clip.playbackRate<=0)issues.push({path:cp+".playbackRate",message:"Playback rate must be positive."});
+      if(Number.isSafeInteger(t.durationFrames)&&clip.startFrame+clip.durationFrames>t.durationFrames)issues.push({path:cp,message:"Clip extends beyond timeline duration."});
+     });
+    });
+   }
+   if(!Array.isArray(t.markers))issues.push({path:"timeline.markers",message:"Timeline markers must be an array."});
+   else t.markers.forEach((marker,mi)=>{if(!marker||typeof marker!=="object"||!Number.isSafeInteger(marker.frame)||marker.frame<0||marker.frame>=t.durationFrames)issues.push({path:`timeline.markers[${mi}]`,message:"Marker frame is outside the timeline."})});
+  }
  }
  return issues;
 }
