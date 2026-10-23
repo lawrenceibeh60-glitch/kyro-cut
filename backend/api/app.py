@@ -53,7 +53,7 @@ def validate_project_payload(payload: Any) -> list[dict[str, str]]:
             asset_ids.add(asset_id)
         if not isinstance(asset.get("name"), str) or not asset["name"].strip():
             issue(path + ".name", "Asset name is required.")
-        if asset.get("kind") not in ASSET_KINDS:
+        if not isinstance(asset.get("kind"), str) or asset.get("kind") not in ASSET_KINDS:
             issue(path + ".kind", "Unsupported asset kind.")
         if not isinstance(asset.get("mimeType"), str) or not isinstance(asset.get("storageKey"), str):
             issue(path, "Asset metadata is malformed.")
@@ -101,7 +101,7 @@ def validate_project_payload(payload: Any) -> list[dict[str, str]]:
                 layer_ids.add(layer_id)
             if not isinstance(layer.get("name"), str) or not layer["name"].strip():
                 issue(lp + ".name", "Layer name is required.")
-            if layer.get("kind") not in LAYER_KINDS:
+            if not isinstance(layer.get("kind"), str) or layer.get("kind") not in LAYER_KINDS:
                 issue(lp + ".kind", "Unsupported layer kind.")
             if not isinstance(layer.get("enabled"), bool):
                 issue(lp + ".enabled", "Layer enabled state must be boolean.")
@@ -126,7 +126,7 @@ def validate_project_payload(payload: Any) -> list[dict[str, str]]:
                         issue(kp, "Keyframe must be an object.")
                         continue
                     frame = key.get("frame")
-                    if not isinstance(frame, int) or isinstance(frame, bool) or frame < 0 or not _finite(key.get("value")) or key.get("interpolation") not in {"hold", "linear"}:
+                    if not isinstance(frame, int) or isinstance(frame, bool) or frame < 0 or not _finite(key.get("value")) or not isinstance(key.get("interpolation"), str) or key.get("interpolation") not in {"hold", "linear"}:
                         issue(kp, "Keyframe requires a non-negative integer frame, finite value and supported interpolation.")
                     elif frame in frames:
                         issue(kp + ".frame", "Keyframe frames must be unique within a property.")
@@ -141,7 +141,7 @@ def validate_project_payload(payload: Any) -> list[dict[str, str]]:
                 if not isinstance(effect, dict):
                     issue(ep, "Effect must be an object.")
                     continue
-                if effect.get("type") not in EFFECT_TYPES:
+                if not isinstance(effect.get("type"), str) or effect.get("type") not in EFFECT_TYPES:
                     issue(ep + ".type", "Unsupported effect type.")
                 if not isinstance(effect.get("id"), str) or not effect["id"]:
                     issue(ep + ".id", "Effect id is required.")
