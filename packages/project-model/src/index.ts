@@ -13,7 +13,8 @@ export interface TimelineTrackDocument{id:string;name:string;kind:"video"|"audio
 export interface TimelineSequenceDocument{id:string;frameRate:number;durationFrames:number;tracks:TimelineTrackDocument[];markers:Array<{id:string;frame:number;label:string;color?:string}>}
 export interface StudioLayer{id:string;name:string;kind:"shape"|"text"|"image"|"video"|"audio";shape?:"circle"|"ring"|"rectangle"|"diamond"|"line";textContent?:string;fontSize?:number;fontFamily?:string;assetId?:string;effects?:LayerEffect[];enabled:boolean;transform:LayerTransform;color:string;x:AnimatableProperty<number>;y:AnimatableProperty<number>}
 export interface Composition{id:string;name:string;width:number;height:number;frameRate:number;durationFrames:number;background:string;layers:StudioLayer[]}
-export interface ProjectNodeGraph{nodes:Array<{id:string;type:string;params:Record<string,unknown>}>;connections:Array<{id:string;fromNodeId:string;fromPortId:string;toNodeId:string;toPortId:string}>}\nexport interface KcutProject{format:typeof PROJECT_FORMAT;version:number;id:string;name:string;createdAt:string;updatedAt:string;activeCompositionId:string;assets?:AssetReference[];timeline?:TimelineSequenceDocument;nodeGraph?:ProjectNodeGraph;compositions:Composition[];metadata:{author?:string;colorSpace:"srgb";notes?:string}}
+export interface ProjectNodeGraph{nodes:Array<{id:string;type:string;params:Record<string,unknown>}>;connections:Array<{id:string;fromNodeId:string;fromPortId:string;toNodeId:string;toPortId:string}>}
+export interface KcutProject{format:typeof PROJECT_FORMAT;version:number;id:string;name:string;createdAt:string;updatedAt:string;activeCompositionId:string;assets?:AssetReference[];timeline?:TimelineSequenceDocument;nodeGraph?:ProjectNodeGraph;compositions:Composition[];metadata:{author?:string;colorSpace:"srgb";notes?:string}}
 export type ValidationIssue={path:string;message:string};
 const LAYER_KINDS=["shape","text","image","video","audio"] as const;
 const EFFECT_TYPES=["glow","speed-lines","impact-ring","motion-trail"] as const;
@@ -82,7 +83,8 @@ export function validateProject(input:unknown):ValidationIssue[]{
   });
   if(typeof p.activeCompositionId!=="string"||!compositionIds.has(p.activeCompositionId))issues.push({path:"activeCompositionId",message:"Active composition must reference an existing composition."});
  }
- if(p.nodeGraph!==undefined&&(!p.nodeGraph||!Array.isArray(p.nodeGraph.nodes)||!Array.isArray(p.nodeGraph.connections)))issues.push({path:"nodeGraph",message:"Node graph must contain nodes and connections arrays."});\n if(p.timeline!==undefined){
+ if(p.nodeGraph!==undefined&&(!p.nodeGraph||!Array.isArray(p.nodeGraph.nodes)||!Array.isArray(p.nodeGraph.connections)))issues.push({path:"nodeGraph",message:"Node graph must contain nodes and connections arrays."});
+ if(p.timeline!==undefined){
   const t=p.timeline as TimelineSequenceDocument;
   if(!t||typeof t!=="object"||Array.isArray(t)){issues.push({path:"timeline",message:"Timeline must be an object."});}
   else{
