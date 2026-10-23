@@ -1,7 +1,8 @@
 export const PROJECT_FORMAT="kyro-cut";
 export const CURRENT_PROJECT_VERSION=1;
-export type Interpolation="hold"|"linear";
-export interface Keyframe<T>{frame:number;value:T;interpolation:Interpolation}
+export type Interpolation="hold"|"linear"|"bezier";
+export interface BezierControlPoints{x1:number;y1:number;x2:number;y2:number}
+export interface Keyframe<T>{frame:number;value:T;interpolation:Interpolation;bezier?:BezierControlPoints}
 export interface AnimatableProperty<T>{id:string;name:string;value:T;keyframes:Keyframe<T>[]}
 export interface LayerTransform{x:number;y:number;scaleX:number;scaleY:number;rotation:number;opacity:number}
 export type EffectType="glow"|"speed-lines"|"impact-ring"|"motion-trail";
@@ -57,8 +58,8 @@ export function validateProject(input:unknown):ValidationIssue[]{
      const seenFrames=new Set<number>();
      prop.keyframes.forEach((key,ki)=>{
       const kp=`${lp}.${axis}.keyframes[${ki}]`;
-      if(!key||typeof key!=="object"||!Number.isSafeInteger((key as Keyframe<number>).frame)||(key as Keyframe<number>).frame<0||!finite((key as Keyframe<number>).value)||!["hold","linear"].includes((key as Keyframe<number>).interpolation)){issues.push({path:kp,message:"Keyframe requires a non-negative integer frame, finite value and supported interpolation."});return;}
-      const frame=(key as Keyframe<number>).frame;if(seenFrames.has(frame))issues.push({path:kp+".frame",message:"Keyframe frames must be unique within a property."});seenFrames.add(frame);
+      if(!key||typeof key!=="object"||!Number.isSafeInteger((key as Keyframe<number>).frame)||(key as Keyframe<number>).frame<0||!finite((key as Keyframe<number>).value)||!["hold","linear","bezier"].includes((key as Keyframe<number>).interpolation)){issues.push({path:kp,message:"Keyframe requires a non-negative integer frame, finite value and supported interpolation."});return;}
+      const parsedKey=key as Keyframe<number>;const frame=parsedKey.frame;if(seenFrames.has(frame))issues.push({path:kp+".frame",message:"Keyframe frames must be unique within a property."});seenFrames.add(frame);if(parsedKey.bezier!==undefined&&(!parsedKey.bezier||![parsedKey.bezier.x1,parsedKey.bezier.y1,parsedKey.bezier.x2,parsedKey.bezier.y2].every(finite)||![parsedKey.bezier.x1,parsedKey.bezier.y1,parsedKey.bezier.x2,parsedKey.bezier.y2].every(v=>v>=0&&v<=1)))issues.push({path:kp+".bezier",message:"Bezier controls must be finite values between 0 and 1."});
      });
     }
     if(l.effects!==undefined&&!Array.isArray(l.effects))issues.push({path:lp+".effects",message:"Effects must be an array."});
