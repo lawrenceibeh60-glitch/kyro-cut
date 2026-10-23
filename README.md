@@ -12,7 +12,7 @@ KYRO CUT is a browser-first creative studio being built for professional motion 
 - Browser WebM preview recording with optional imported audio tracks; this is a preview recorder, not the final render queue or a full audio mixer.
 - Editable circle, ring, rectangle, diamond, and line vector geometry plus text layers.
 - Local image, video, and audio import backed by IndexedDB media blobs; images/videos render in the composition viewer and audio/video follow the transport.
-- Integer-frame timebase and deterministic hold/linear keyframe evaluation.
+- Integer-frame timebase and deterministic hold/linear/cubic-Bézier keyframe evaluation with editable interpolation mode.
 - Flask API health endpoint and project validation endpoint.
 - Automated TypeScript and Python tests plus GitHub Actions CI.
 - Render Blueprint for separate static studio and Flask API services.
