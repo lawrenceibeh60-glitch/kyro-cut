@@ -24,5 +24,6 @@ describe("animated properties",()=>{
  const property={id:"x",name:"X",value:0,keyframes:[{frame:10,value:100,interpolation:"linear" as const},{frame:0,value:0,interpolation:"linear" as const}]};
  it("evaluates linear interpolation deterministically even with unsorted keys",()=>expect(evaluateProperty(property,5)).toBe(50));
  it("holds the left key for hold interpolation",()=>expect(evaluateProperty({...property,keyframes:[{frame:0,value:4,interpolation:"hold" as const},{frame:10,value:20,interpolation:"linear" as const}]},5)).toBe(4));
+ it("applies Bézier easing between keyframes",()=>expect(evaluateProperty({...property,keyframes:[{frame:0,value:0,interpolation:"bezier" as const},{frame:10,value:100,interpolation:"linear" as const}]},5)).toBeGreaterThan(50));
  it("replaces duplicate-frame keys",()=>expect(upsertKeyframe(property,{frame:10,value:55,interpolation:"linear"}).keyframes.filter(k=>k.frame===10)).toHaveLength(1));
 });
