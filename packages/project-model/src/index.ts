@@ -8,7 +8,7 @@ export type EffectType="glow"|"speed-lines"|"impact-ring"|"motion-trail";
 export interface LayerEffect{id:string;type:EffectType;enabled:boolean;version:number;params:Record<string,number|boolean|string>}
 export interface StudioLayer{id:string;name:string;kind:"shape"|"text"|"image"|"video"|"audio";shape?:"circle"|"ring";effects?:LayerEffect[];enabled:boolean;transform:LayerTransform;color:string;x:AnimatableProperty<number>;y:AnimatableProperty<number>}
 export interface Composition{id:string;name:string;width:number;height:number;frameRate:number;durationFrames:number;background:string;layers:StudioLayer[]}
-export interface KcutProject{format:typeof PROJECT_FORMAT;version:number;id:string;name:string;createdAt:string;updatedAt:string;activeCompositionId:string;compositions:Composition[];metadata:{author?:string;colorSpace:"srgb";notes?:string}}
+export interface KcutProject{format:typeof PROJECT_FORMAT;version:number;id:string;name:string;createdAt:string;updatedAt:string;activeCompositionId:string;assets?:AssetReference[];compositions:Composition[];metadata:{author?:string;colorSpace:"srgb";notes?:string}}
 export type ValidationIssue={path:string;message:string};
 const LAYER_KINDS=["shape","text","image","video","audio"] as const;
 const EFFECT_TYPES=["glow","speed-lines","impact-ring","motion-trail"] as const;
@@ -21,6 +21,9 @@ export function validateProject(input:unknown):ValidationIssue[]{
  if(!Number.isInteger(p.version)||(p.version??0)<1||(p.version??0)>CURRENT_PROJECT_VERSION)issues.push({path:"version",message:"Project version is not supported."});
  if(typeof p.id!=="string"||!p.id.trim())issues.push({path:"id",message:"Project id is required."});
  if(typeof p.name!=="string"||!p.name.trim())issues.push({path:"name",message:"Project name is required."});
+ const assetIds=new Set<string>();
+ if(p.assets!==undefined&&!Array.isArray(p.assets))issues.push({path:"assets",message:"Assets must be an array."});
+ if(Array.isArray(p.assets))p.assets.forEach((rawAsset,index)=>{const ap=`assets[${index}]`;if(!rawAsset||typeof rawAsset!=="object"||Array.isArray(rawAsset)){issues.push({path:ap,message:"Asset must be an object."});return;}const a=rawAsset as AssetReference;if(typeof a.id!=="string"||!a.id||assetIds.has(a.id))issues.push({path:ap+".id",message:"Asset ids must be present and unique."});if(typeof a.id==="string")assetIds.add(a.id);if(typeof a.name!=="string"||!a.name.trim())issues.push({path:ap+".name",message:"Asset name is required."});if(!["image","video","audio","font","other"].includes(a.kind))issues.push({path:ap+".kind",message:"Unsupported asset kind."});if(typeof a.mimeType!=="string"||!Number.isSafeInteger(a.sizeBytes)||a.sizeBytes<0||!Number.isFinite(a.lastModified)||typeof a.storageKey!=="string"||!a.storageKey)issues.push({path:ap,message:"Asset metadata is malformed."});});
  if(!Array.isArray(p.compositions)||!p.compositions.length)issues.push({path:"compositions",message:"At least one composition is required."});
  else{
   const compositionIds=new Set<string>();const layerIds=new Set<string>();
@@ -41,6 +44,7 @@ export function validateProject(input:unknown):ValidationIssue[]{
     if(typeof l.id!=="string"||!l.id||layerIds.has(l.id))issues.push({path:lp+".id",message:"Layer ids must be present and unique within the project."});
     if(typeof l.id==="string")layerIds.add(l.id);
     if(typeof l.name!=="string"||!l.name.trim())issues.push({path:lp+".name",message:"Layer name is required."});
+    if(l.assetId!==undefined&&(typeof l.assetId!=="string"||!assetIds.has(l.assetId)))issues.push({path:lp+".assetId",message:"Layer asset reference must exist in the project asset list."});
     if(!(LAYER_KINDS as readonly unknown[]).includes(l.kind))issues.push({path:lp+".kind",message:"Unsupported layer kind."});
     if(typeof l.enabled!=="boolean")issues.push({path:lp+".enabled",message:"Layer enabled state must be boolean."});
     if(!l.transform||typeof l.transform!=="object"||!["x","y","scaleX","scaleY","rotation","opacity"].every(key=>finite((l.transform as unknown as Record<string,unknown>)[key])))issues.push({path:lp+".transform",message:"Transform must contain finite x, y, scale, rotation and opacity values."});
