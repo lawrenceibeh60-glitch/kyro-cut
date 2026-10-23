@@ -4,7 +4,7 @@ KYRO CUT is a browser-first creative studio being built for professional motion 
 
 ## Current foundation
 - React + TypeScript studio shell with an interactive Canvas 2D composition preview, editable text layers, transforms, and keyframes.
-- Composition and multitrack Edit workspaces with clip split, right-trim, ripple-delete, and snapping engine primitives.
+- Editable composition settings and multitrack Edit workspace with clip split, right-trim, ripple-delete, and snapping engine primitives.
 - Portable, versioned `.kcut` JSON project format with validation, serialization, import and export.
 - IndexedDB local autosave/recovery with a localStorage fallback.
 - Undo/redo command history and Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z shortcuts.
@@ -13,7 +13,6 @@ KYRO CUT is a browser-first creative studio being built for professional motion 
 - Editable circle, ring, rectangle, diamond, and line vector geometry plus text layers.
 - Local image, video, and audio import backed by IndexedDB media blobs; images/videos render in the composition viewer and audio/video follow the transport.
 - Integer-frame timebase and deterministic hold/linear keyframe evaluation.
-- Reversible command history with undo/redo semantics.
 - Flask API health endpoint and project validation endpoint.
 - Automated TypeScript and Python tests plus GitHub Actions CI.
 - Render Blueprint for separate static studio and Flask API services.
@@ -47,4 +46,4 @@ pytest
 ```
 
 ## Honest status
-The current preview is an initial Canvas 2D implementation. A production GPU render graph, full video/audio decoding and export, indexed local recovery, media relinking, node compositing, tracking, color scopes, remote rendering and cloud sync are not yet implemented. They remain part of the engineering scope rather than being represented as shipped.
+The current preview is an initial Canvas 2D implementation. IndexedDB local project recovery and imported-media storage are implemented, but project files do not bundle media bytes. A production GPU render graph, full production video/audio decode and export, media relinking across devices, a fully interactive node-compositing workspace, color-grading UI/scopes, tracking, remote rendering and cloud sync are not yet implemented. They remain part of the engineering scope rather than being represented as shipped.
