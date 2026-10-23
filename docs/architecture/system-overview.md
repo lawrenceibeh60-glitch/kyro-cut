@@ -13,7 +13,7 @@ Timeline positions are integer frame indices. Seconds are derived from frame ind
 Keyframes are sorted by frame during evaluation. Values before the first key use the property's base value; values between keys use the left key's interpolation mode; values after the final key hold the last value. Evaluation is deterministic for the same document and frame.
 
 ## Rendering
-The current viewport uses Canvas 2D to establish the project/animation contract. A typed render-graph package now validates node references and computes deterministic dependency order with cycle detection. The timeline engine provides frame-based trim, split, ripple-delete, snap, and sequence validation primitives. This is an initial renderer, not the final GPU compositor. The architecture will evolve toward WebGL/WebGPU and a dependency-aware render graph.
+The current viewport uses Canvas 2D to establish the project/animation contract. A typed render-graph package now validates node references and computes deterministic dependency order with cycle detection. The timeline engine provides frame-based trim, split, ripple-delete, snap, and sequence validation primitives. A typed node-engine registry validates ports, required inputs, connection types and dependency cycles. This is an initial renderer, not the final GPU compositor. The architecture will evolve toward WebGL/WebGPU and a dependency-aware render graph.
 
 ## Persistence and cloud
 Portable export/import currently uses the `.kcut` document, and the browser keeps an IndexedDB autosave with a localStorage recovery fallback. IndexedDB recovery, asset relinking, revision snapshots, sync conflict resolution, remote render jobs and durable media storage remain future implementation work and are not represented as shipped features.
