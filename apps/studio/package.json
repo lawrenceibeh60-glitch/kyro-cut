@@ -19,7 +19,8 @@
     "@kyro-cut/effect-system": "workspace:*",
     "@kyro-cut/render-graph": "workspace:*",
     "@kyro-cut/timeline-engine": "workspace:*",
-    "@kyro-cut/node-engine": "workspace:*"
+    "@kyro-cut/node-engine": "workspace:*",
+    "@kyro-cut/color-engine": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.3.18",
