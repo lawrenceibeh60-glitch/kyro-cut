@@ -98,6 +98,7 @@ export function validateProject(input:unknown):ValidationIssue[]{
      const tp=`timeline.tracks[${ti}]`;
      if(!track||typeof track!=="object"||Array.isArray(track)){issues.push({path:tp,message:"Track must be an object."});return;}
      if(typeof track.id!=="string"||!track.id||trackIds.has(track.id))issues.push({path:tp+".id",message:"Track ids must be present and unique."});if(typeof track.id==="string")trackIds.add(track.id);
+     if(!["video","audio","overlay"].includes(track.kind))issues.push({path:tp+".kind",message:"Unsupported track kind."});if(typeof track.locked!=="boolean"||typeof track.muted!=="boolean")issues.push({path:tp,message:"Track locked and muted flags must be booleans."});if(track.gain!==undefined&&(!finite(track.gain)||track.gain<0||track.gain>1))issues.push({path:tp+".gain",message:"Track gain must be in [0, 1]."});
      if(!Array.isArray(track.clips)){issues.push({path:tp+".clips",message:"Track clips must be an array."});return;}
      track.clips.forEach((clip,ci)=>{
       const cp=`${tp}.clips[${ci}]`;
