@@ -9,7 +9,7 @@ export type EffectType="glow"|"speed-lines"|"impact-ring"|"motion-trail";
 export interface LayerEffect{id:string;type:EffectType;enabled:boolean;version:number;params:Record<string,number|boolean|string>}
 export interface AssetReference{id:string;name:string;kind:"image"|"video"|"audio"|"font"|"other";mimeType:string;sizeBytes:number;lastModified:number;storageKey:string}
 export interface TimelineClipDocument{id:string;layerId?:string;assetId?:string;trackId:string;kind:"video"|"audio"|"image"|"generated";startFrame:number;sourceInFrame:number;durationFrames:number;playbackRate:number;muted?:boolean}
-export interface TimelineTrackDocument{id:string;name:string;kind:"video"|"audio"|"overlay";locked:boolean;muted:boolean;clips:TimelineClipDocument[]}
+export interface TimelineTrackDocument{id:string;name:string;kind:"video"|"audio"|"overlay";locked:boolean;muted:boolean;gain?:number;clips:TimelineClipDocument[]}
 export interface TimelineSequenceDocument{id:string;frameRate:number;durationFrames:number;tracks:TimelineTrackDocument[];markers:Array<{id:string;frame:number;label:string;color?:string}>}
 export interface StudioLayer{id:string;name:string;kind:"shape"|"text"|"image"|"video"|"audio";shape?:"circle"|"ring"|"rectangle"|"diamond"|"line";textContent?:string;fontSize?:number;fontFamily?:string;assetId?:string;effects?:LayerEffect[];enabled:boolean;transform:LayerTransform;color:string;x:AnimatableProperty<number>;y:AnimatableProperty<number>}
 export interface Composition{id:string;name:string;width:number;height:number;frameRate:number;durationFrames:number;background:string;layers:StudioLayer[]}
