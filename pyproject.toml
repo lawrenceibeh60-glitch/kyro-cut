@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kyro-cut-api"
+version = "0.1.0"
+description = "KYRO CUT creative studio API"
+requires-python = ">=3.11"
+dependencies = ["Flask>=3.0,<4", "flask-cors>=4.0,<6", "gunicorn>=22,<24"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9"]
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
