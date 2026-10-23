@@ -16,7 +16,8 @@
     "@kyro-cut/property-system": "workspace:*",
     "@kyro-cut/timebase": "workspace:*",
     "@kyro-cut/command-system": "workspace:*",
-    "@kyro-cut/effect-system": "workspace:*"
+    "@kyro-cut/effect-system": "workspace:*",
+    "@kyro-cut/render-graph": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.3.18",
