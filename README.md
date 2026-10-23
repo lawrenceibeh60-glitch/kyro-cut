@@ -5,6 +5,8 @@ KYRO CUT is a browser-first creative studio being built for professional motion 
 ## Current foundation
 - React + TypeScript studio shell with an interactive Canvas 2D composition preview.
 - Portable, versioned `.kcut` JSON project format with validation, serialization, import and export.
+- IndexedDB local autosave/recovery with a localStorage fallback.
+- Undo/redo command history and Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z shortcuts.
 - Integer-frame timebase and deterministic hold/linear keyframe evaluation.
 - Reversible command history with undo/redo semantics.
 - Flask API health endpoint and project validation endpoint.
