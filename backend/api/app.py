@@ -153,7 +153,8 @@ def validate_project_payload(payload: Any) -> list[dict[str, str]]:
                 if not isinstance(params, dict) or any(not isinstance(v, (str, bool, int, float)) or (isinstance(v, float) and not math.isfinite(v)) for v in params.values()):
                     issue(ep + ".params", "Effect parameters must be finite scalar values.")
 
-    if payload.get("activeCompositionId") not in composition_ids:
+    active_id = payload.get("activeCompositionId")
+    if not isinstance(active_id, str) or active_id not in composition_ids:
         issue("activeCompositionId", "Must reference an existing composition.")
 
     timeline = payload.get("timeline")
@@ -199,9 +200,9 @@ def validate_project_payload(payload: Any) -> list[dict[str, str]]:
                         clip_ids.add(clip_id)
                     if clip.get("trackId") != track_id:
                         issue(cp + ".trackId", "Clip track reference does not match its containing track.")
-                    if clip.get("layerId") is not None and clip.get("layerId") not in layer_ids:
+                    if clip.get("layerId") is not None and (not isinstance(clip.get("layerId"), str) or clip.get("layerId") not in layer_ids):
                         issue(cp + ".layerId", "Clip must reference an existing layer.")
-                    if clip.get("assetId") is not None and clip.get("assetId") not in asset_ids:
+                    if clip.get("assetId") is not None and (not isinstance(clip.get("assetId"), str) or clip.get("assetId") not in asset_ids):
                         issue(cp + ".assetId", "Clip must reference an existing asset.")
                     for key in ("startFrame", "sourceInFrame", "durationFrames"):
                         value = clip.get(key)
