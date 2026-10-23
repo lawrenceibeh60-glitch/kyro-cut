@@ -3,7 +3,8 @@
 KYRO CUT is a browser-first creative studio being built for professional motion graphics, anime-style compositing, video editing, color, audio, and delivery.
 
 ## Current foundation
-- React + TypeScript studio shell with an interactive Canvas 2D composition preview.
+- React + TypeScript studio shell with an interactive Canvas 2D composition preview, editable text layers, transforms, and keyframes.
+- Composition and multitrack Edit workspaces with clip split, right-trim, ripple-delete, and snapping engine primitives.
 - Portable, versioned `.kcut` JSON project format with validation, serialization, import and export.
 - IndexedDB local autosave/recovery with a localStorage fallback.
 - Undo/redo command history and Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z shortcuts.
