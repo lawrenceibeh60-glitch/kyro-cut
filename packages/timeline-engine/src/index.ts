@@ -1,5 +1,5 @@
 export type TimelineMediaKind="video"|"audio"|"image"|"generated";
-export interface TimelineClip{id:string;assetId?:string;trackId:string;kind:TimelineMediaKind;startFrame:number;sourceInFrame:number;durationFrames:number;playbackRate:number;muted?:boolean}
+export interface TimelineClip{id:string;layerId?:string;assetId?:string;trackId:string;kind:TimelineMediaKind;startFrame:number;sourceInFrame:number;durationFrames:number;playbackRate:number;muted?:boolean}
 export interface TimelineTrack{id:string;name:string;kind:"video"|"audio"|"overlay";locked:boolean;muted:boolean;clips:TimelineClip[]}
 export interface TimelineMarker{id:string;frame:number;label:string;color?:string}
 export interface TimelineSequence{id:string;frameRate:number;durationFrames:number;tracks:TimelineTrack[];markers:TimelineMarker[]}
