@@ -46,6 +46,7 @@ export function validateProject(input:unknown):ValidationIssue[]{
     if(typeof l.name!=="string"||!l.name.trim())issues.push({path:lp+".name",message:"Layer name is required."});
     if(l.assetId!==undefined&&(typeof l.assetId!=="string"||!assetIds.has(l.assetId)))issues.push({path:lp+".assetId",message:"Layer asset reference must exist in the project asset list."});
     if(!(LAYER_KINDS as readonly unknown[]).includes(l.kind))issues.push({path:lp+".kind",message:"Unsupported layer kind."});
+    if(l.kind==="text"){if(l.textContent!==undefined&&typeof l.textContent!=="string")issues.push({path:lp+".textContent",message:"Text content must be a string."});if(l.fontSize!==undefined&&(!finite(l.fontSize)||l.fontSize<1||l.fontSize>1000))issues.push({path:lp+".fontSize",message:"Font size must be between 1 and 1000."});if(l.fontFamily!==undefined&&typeof l.fontFamily!=="string")issues.push({path:lp+".fontFamily",message:"Font family must be a string."});}
     if(typeof l.enabled!=="boolean")issues.push({path:lp+".enabled",message:"Layer enabled state must be boolean."});
     if(!l.transform||typeof l.transform!=="object"||!["x","y","scaleX","scaleY","rotation","opacity"].every(key=>finite((l.transform as unknown as Record<string,unknown>)[key])))issues.push({path:lp+".transform",message:"Transform must contain finite x, y, scale, rotation and opacity values."});
     else if(l.transform.opacity<0||l.transform.opacity>1)issues.push({path:lp+".transform.opacity",message:"Opacity must be between 0 and 1."});
