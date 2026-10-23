@@ -9,6 +9,7 @@ describe("portable project format",()=>{
  it("round trips a valid project",()=>expect(parseProject(serializeProject(project))).toEqual(project));
  it("rejects unsupported formats",()=>expect(validateProject({...project,format:"other"}).some(i=>i.path==="format")).toBe(true));
  it("rejects an active composition that does not exist",()=>expect(validateProject({...project,activeCompositionId:"missing"}).some(i=>i.path==="activeCompositionId")).toBe(true));
+ it("rejects layers with missing media references",()=>{const malformed={...project,compositions:[{...project.compositions[0],layers:[{id:"l1",name:"Image",kind:"image",assetId:"missing",enabled:true,color:"#fff",transform:{x:0,y:0,scaleX:1,scaleY:1,rotation:0,opacity:1},x:{id:"x",name:"X",value:0,keyframes:[]},y:{id:"y",name:"Y",value:0,keyframes:[]}} as never]}]};expect(validateProject(malformed).some(i=>i.path.endsWith("assetId"))).toBe(true)});
  it("rejects malformed layer keyframes",()=>{const malformed={...project,compositions:[{...project.compositions[0],layers:[{id:"l1",name:"Layer",kind:"shape",enabled:true,color:"#fff",transform:{x:0,y:0,scaleX:1,scaleY:1,rotation:0,opacity:1},x:{id:"x",name:"X",value:0,keyframes:[{frame:-1,value:2,interpolation:"linear"}]},y:{id:"y",name:"Y",value:0,keyframes:[]}} as never]}]};expect(validateProject(malformed).some(i=>i.path.includes("keyframes"))).toBe(true)});
 });
 describe("frame timebase",()=>{
