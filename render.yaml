@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: kyro-cut-api
+    runtime: python
+    plan: free
+    buildCommand: pip install .
+    startCommand: gunicorn 'backend.api.app:app' --bind 0.0.0.0:$PORT --workers 2 --threads 4
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: CORS_ORIGINS
+        value: "*"
+  - type: web
+    name: kyro-cut-studio
+    runtime: static
+    buildCommand: corepack enable && pnpm install --no-frozen-lockfile && pnpm --filter @kyro-cut/studio build
+    staticPublishPath: apps/studio/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
