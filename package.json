@@ -1,1 +1,19 @@
-{"name":"kyro-cut","private":true,"version":"0.1.0"}
+{
+  "name": "kyro-cut",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @kyro-cut/studio dev",
+    "build": "pnpm --filter @kyro-cut/studio build",
+    "typecheck": "pnpm --filter @kyro-cut/studio typecheck",
+    "test": "pnpm --filter @kyro-cut/studio test"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  }
+}
