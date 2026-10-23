@@ -4,7 +4,9 @@ export type Interpolation = "hold" | "linear";
 export interface Keyframe<T> { frame:number; value:T; interpolation:Interpolation }
 export interface AnimatableProperty<T> { id:string; name:string; value:T; keyframes:Keyframe<T>[] }
 export interface LayerTransform { x:number;y:number;scaleX:number;scaleY:number;rotation:number;opacity:number }
-export interface StudioLayer { id:string;name:string;kind:"shape"|"text"|"image"|"video"|"audio";enabled:boolean;transform:LayerTransform;color:string;x:AnimatableProperty<number>;y:AnimatableProperty<number> }
+export type EffectType="glow"|"speed-lines"|"impact-ring"|"motion-trail";
+export interface LayerEffect {id:string;type:EffectType;enabled:boolean;version:number;params:Record<string,number|boolean|string>}
+export interface StudioLayer { id:string;name:string;kind:"shape"|"text"|"image"|"video"|"audio";shape?:"circle"|"ring";effects?:LayerEffect[];enabled:boolean;transform:LayerTransform;color:string;x:AnimatableProperty<number>;y:AnimatableProperty<number> }
 export interface Composition { id:string;name:string;width:number;height:number;frameRate:number;durationFrames:number;background:string;layers:StudioLayer[] }
 export interface KcutProject { format:typeof PROJECT_FORMAT;version:number;id:string;name:string;createdAt:string;updatedAt:string;activeCompositionId:string;compositions:Composition[];metadata:{author?:string;colorSpace:"srgb";notes?:string} }
 export type ValidationIssue={path:string;message:string};
