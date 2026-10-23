@@ -8,7 +8,7 @@ KYRO CUT is a browser-first creative studio being built for professional motion 
 - Portable, versioned `.kcut` JSON project format with validation, serialization, import and export.
 - IndexedDB local autosave/recovery with a localStorage fallback.
 - Undo/redo command history and Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z shortcuts.
-- Extensible effect registry with adjustable glow, radial speed lines, motion trails, and pulsing impact rings.
+- Extensible effect registry with adjustable glow, radial speed lines, motion trails, and pulsing impact rings.\n- Interactive node-compositing workspace with typed ports, graph validation, saved connections, node creation/removal and cycle detection.\n- Dedicated color, audio and delivery workspaces with editable layer controls, track mute controls and preview export entry points.
 - Browser WebM preview recording with optional imported audio tracks; this is a preview recorder, not the final render queue or a full audio mixer.
 - Editable circle, ring, rectangle, diamond, and line vector geometry plus text layers.
 - Local image, video, and audio import backed by IndexedDB media blobs; images/videos render in the composition viewer and audio/video follow the transport.
@@ -46,4 +46,4 @@ pytest
 ```
 
 ## Honest status
-The current preview is an initial Canvas 2D implementation. IndexedDB local project recovery and imported-media storage are implemented, but project files do not bundle media bytes. A production GPU render graph, full production video/audio decode and export, media relinking across devices, a fully interactive node-compositing workspace, color-grading UI/scopes, tracking, remote rendering and cloud sync are not yet implemented. They remain part of the engineering scope rather than being represented as shipped.
+The current preview is an initial Canvas 2D implementation. IndexedDB local project recovery and imported-media storage are implemented, but project files do not bundle media bytes. A production GPU render graph, full production video/audio decode and export, media relinking across devices, production GPU node evaluation, color scopes and full grading render passes, tracking, remote rendering and cloud sync are not yet implemented. They remain part of the engineering scope rather than being represented as shipped.
