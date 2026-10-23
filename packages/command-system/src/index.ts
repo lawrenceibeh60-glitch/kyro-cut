@@ -6,5 +6,6 @@ export class CommandHistory<S>{
  execute(command:EditorCommand<S>):S{const before=this.state;const next=command.execute(before);if(next===undefined)throw new Error(`Command "${command.label}" returned undefined state.`);this.undoStack.push({command,before});this.redoStack=[];this.state=next;this.onChange?.(next);return next}
  undo():S{const entry=this.undoStack.pop();if(!entry)return this.state;this.state=entry.command.undo(this.state);this.redoStack.push(entry);this.onChange?.(this.state);return this.state}
  redo():S{const entry=this.redoStack.pop();if(!entry)return this.state;const before=this.state;this.state=entry.command.execute(this.state);this.undoStack.push({command:entry.command,before});this.onChange?.(this.state);return this.state}
+ replace(state:S):void{this.state=state;this.clear();this.onChange?.(state)}
  clear():void{this.undoStack=[];this.redoStack=[]}
 }
