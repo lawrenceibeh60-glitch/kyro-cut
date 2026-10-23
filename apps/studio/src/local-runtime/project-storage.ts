@@ -1,13 +1,13 @@
 import {parseProject,serializeProject,type KcutProject} from "@kyro-cut/project-model";
 const DB_NAME="kyro-cut-local";
-const DB_VERSION=1;
+const DB_VERSION=2;
 const FALLBACK_KEY="kyro-cut:autosave";
 
 function openDatabase():Promise<IDBDatabase>{
  return new Promise((resolve,reject)=>{
   if(typeof indexedDB==="undefined"){reject(new Error("IndexedDB is unavailable"));return;}
   const request=indexedDB.open(DB_NAME,DB_VERSION);
-  request.onupgradeneeded=()=>{const db=request.result;if(!db.objectStoreNames.contains("projects"))db.createObjectStore("projects",{keyPath:"id"});if(!db.objectStoreNames.contains("meta"))db.createObjectStore("meta",{keyPath:"key"});};
+  request.onupgradeneeded=()=>{const db=request.result;if(!db.objectStoreNames.contains("projects"))db.createObjectStore("projects",{keyPath:"id"});if(!db.objectStoreNames.contains("meta"))db.createObjectStore("meta",{keyPath:"key"});if(!db.objectStoreNames.contains("assets"))db.createObjectStore("assets",{keyPath:"id"});};
   request.onsuccess=()=>resolve(request.result);
   request.onerror=()=>reject(request.error??new Error("Could not open local project database."));
  });
