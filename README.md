@@ -7,6 +7,8 @@ KYRO CUT is a browser-first creative studio being built for professional motion 
 - Portable, versioned `.kcut` JSON project format with validation, serialization, import and export.
 - IndexedDB local autosave/recovery with a localStorage fallback.
 - Undo/redo command history and Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z shortcuts.
+- Extensible effect registry with adjustable glow, radial speed lines, motion trails, and pulsing impact rings.
+- Local image, video, and audio import backed by IndexedDB media blobs; images/videos render in the composition viewer and audio/video follow the transport.
 - Integer-frame timebase and deterministic hold/linear keyframe evaluation.
 - Reversible command history with undo/redo semantics.
 - Flask API health endpoint and project validation endpoint.
