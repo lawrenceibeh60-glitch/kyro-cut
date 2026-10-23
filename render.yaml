@@ -14,7 +14,7 @@ services:
   - type: web
     name: kyro-cut-studio
     runtime: static
-    buildCommand: corepack enable && pnpm install --no-frozen-lockfile && pnpm --filter @kyro-cut/studio build
+    buildCommand: pnpm install --no-frozen-lockfile && pnpm --filter @kyro-cut/studio build
     staticPublishPath: apps/studio/dist
     routes:
       - type: rewrite
