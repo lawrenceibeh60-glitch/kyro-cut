@@ -10,6 +10,7 @@ KYRO CUT is a browser-first creative studio being built for professional motion 
 - Undo/redo command history and Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z shortcuts.
 - Extensible effect registry with adjustable glow, radial speed lines, motion trails, and pulsing impact rings.
 - Browser WebM preview recording; this captures the visual preview only and does not include an audio mix.
+- Editable circle, ring, rectangle, diamond, and line vector geometry plus text layers.
 - Local image, video, and audio import backed by IndexedDB media blobs; images/videos render in the composition viewer and audio/video follow the transport.
 - Integer-frame timebase and deterministic hold/linear keyframe evaluation.
 - Reversible command history with undo/redo semantics.
