@@ -126,12 +126,15 @@ def validate_project_payload(payload: Any) -> list[dict[str, str]]:
                         issue(kp, "Keyframe must be an object.")
                         continue
                     frame = key.get("frame")
-                    if not isinstance(frame, int) or isinstance(frame, bool) or frame < 0 or not _finite(key.get("value")) or not isinstance(key.get("interpolation"), str) or key.get("interpolation") not in {"hold", "linear"}:
+                    if not isinstance(frame, int) or isinstance(frame, bool) or frame < 0 or not _finite(key.get("value")) or not isinstance(key.get("interpolation"), str) or key.get("interpolation") not in {"hold", "linear", "bezier"}:
                         issue(kp, "Keyframe requires a non-negative integer frame, finite value and supported interpolation.")
                     elif frame in frames:
                         issue(kp + ".frame", "Keyframe frames must be unique within a property.")
                     else:
                         frames.add(frame)
+                    bezier = key.get("bezier")
+                    if bezier is not None and (not isinstance(bezier, dict) or not all(_finite(bezier.get(axis)) and 0 <= bezier[axis] <= 1 for axis in ("x1", "y1", "x2", "y2"))):
+                        issue(kp + ".bezier", "Bezier controls must be finite values between 0 and 1.")
             effects = layer.get("effects", [])
             if not isinstance(effects, list):
                 issue(lp + ".effects", "Effects must be an array.")
